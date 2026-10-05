@@ -1,0 +1,18 @@
+# Verified working stack (numpy 1.x world — required because Anaconda's matplotlib is
+# compiled against numpy 1.x; opencv-python 5.x pulls numpy 2 and breaks it).
+# torch/torchvision come from the +cu124 index; the rest from PyPI.
+#   pip install -r requirements.txt
+#
+# Pre-installed CUDA build (do NOT let pip upgrade these):
+#   torch==2.6.0+cu124, torchvision==0.21.0+cu124
+
+numpy==1.26.4             # PIN: numpy 1.x. numpy 2.x breaks Anaconda's numpy-1-compiled matplotlib
+opencv-python-headless==4.9.0.80  # headless: works on GUI-less servers AND Windows (we never
+                                  # call cv2.imshow). 4.9 is numpy-1.x built (5.x requires numpy>=2).
+ultralytics==8.4.95       # YOLOv11 training / inference / ONNX export
+albumentations==2.0.8     # extra augmentation (motion blur) for cross-broadcast robustness
+onnxruntime-gpu>=1.17     # C++-runtime inference acceleration + FPS benchmark
+matplotlib>=3.8           # comparison charts, heatmaps (Anaconda's 3.9.2 is fine under numpy 1.x)
+scipy>=1.11               # Gaussian heatmap generation, trajectory smoothing
+tqdm>=4.66                # progress bars
+pyyaml>=6.0               # config files

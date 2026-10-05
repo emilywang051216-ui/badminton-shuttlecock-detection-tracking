@@ -1,0 +1,40 @@
+# Training / augmentation hyperparameters for shuttlecock detection.
+# Read by scripts/02_train_yolo.py and passed to Ultralytics model.train().
+# Tuned for: a tiny (~5x9 px) single object + generalizing across broadcast styles.
+
+model: yolo11s.pt        # COCO-pretrained; 's' balances accuracy vs 8GB VRAM
+imgsz: 640               # matches the data's native 640x640 (upscaling adds no real detail)
+epochs: 100
+patience: 20             # early stop on the (video-level) val set
+batch: 16                # fits 8GB at 640 with 's'; lower to 8 if OOM
+cache: false             # decoded frames are ~10GB in RAM; on a big-RAM machine pass
+                         # --cache ram for a large speedup. Ultralytics auto-disables if short.
+# workers is NOT set here — 02_train_yolo.py picks it per-OS (0 on Windows, up to 8 on Linux);
+# override with --workers.
+optimizer: auto
+cos_lr: true
+amp: true                # mixed precision (default on) — free speedup on the 4060
+
+# --- Augmentation: the main lever for cross-broadcast robustness ----------
+# Color is the biggest domain gap (green vs blue courts, TV color grading, lighting):
+hsv_h: 0.02
+hsv_s: 0.7
+hsv_v: 0.5
+# Geometry — small camera-tilt / zoom variety, court is left-right symmetric:
+degrees: 3.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0002
+fliplr: 0.5
+flipud: 0.0
+# Composition:
+mosaic: 1.0
+close_mosaic: 10         # disable mosaic for the last N epochs to stabilize
+mixup: 0.0               # off — tends to hurt a single tiny object
+copy_paste: 0.0
+
+# Blur robustness (fast shuttle -> motion blur): Ultralytics auto-applies Albumentations
+# Blur + MedianBlur when albumentations is installed, so no custom knob is needed here.
+# (An earlier custom MotionBlur injection segfaulted by mutating the internal Compose; the
+# default blur augs cover the same failure mode reliably.)
