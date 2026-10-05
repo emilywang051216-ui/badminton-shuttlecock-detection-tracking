@@ -1,6 +1,6 @@
 # Badminton Shuttlecock Detection and Tracking
 
-Find the shuttlecock in a badminton match video, follow its flight path, and draw a position heatmap. Built as an AI course final project.
+A computer vision project for detecting and tracking shuttlecocks in badminton match videos, comparing YOLOv11 for frame-based object detection with TrackNetV2 for motion-aware temporal tracking.
 
 It compares two models. YOLOv11 looks at one frame at a time. TrackNetV2 looks at three frames in a row and predicts a heatmap, so it can use motion. The real question was which one actually holds up on a video it has never seen.
 
@@ -73,3 +73,8 @@ data/, models/, outputs/ and the dataset zip are large or generated, so they sta
 ## Notes
 
 The shuttlecock is tiny (around 5 by 9 pixels) and very fast, which is what makes this a fun small object problem. Inference runs comfortably faster than real time once the model is exported to ONNX.
+
+## Author
+
+Yiqing Wang
+The University of Melbourne
